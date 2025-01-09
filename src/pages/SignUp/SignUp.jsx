@@ -3,9 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import img from "../../assets/others/authentication2.png";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../components/SocialLogin/SocialLogin";
 
 const SignUp = () => {
   const { handleSignUp, updateUser } = useAuth();
+  const axiosPublic = useAxiosPublic()
   const navigate = useNavigate();
   const {
     register,
@@ -23,10 +26,21 @@ const SignUp = () => {
       .then((result) => {
         console.log(result.user);
         updateUser(updatedData).then(() => {
-          toast.success("sign up successfully");
+          const userInfo = {
+            name: data?.displayName,
+            email: data?.email,
 
-          reset()
-          navigate('/')      ;
+          }
+          axiosPublic.post('/users', userInfo)
+          .then((res) => {
+            if(res.data.insertedId){
+              toast.success("sign up successfully");
+
+              reset()
+              navigate('/')   
+            }
+          })
+            ;
         });
       })
       .catch((error) => console.log(error));
@@ -114,6 +128,7 @@ const SignUp = () => {
               Login
             </Link>
           </p>
+          <SocialLogin></SocialLogin>
         </div>
       </div>
     </div>

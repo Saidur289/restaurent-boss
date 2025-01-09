@@ -2,10 +2,13 @@ import { FaTrash } from "react-icons/fa";
 import useCart from "../../../hooks/useCart";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { Link } from "react-router-dom";
+import Loading from "../../../Shared/Loading/Loading";
 
 const Cart = () => {
-  const [cart, refetch] = useCart();
+  const [cart, refetch, isLoading] = useCart();
   const axiosSecure = useAxiosSecure()
+  if(isLoading) return <Loading></Loading>
   const result = cart.reduce((pre, curr) => pre + curr.price, 0);
   const handleDeleteCart = id => {
     Swal.fire({
@@ -40,10 +43,10 @@ const Cart = () => {
       <div className="flex justify-evenly">
         <h2 className="text-4xl">Items: {cart.length}</h2>
         <h2 className="text-4xl">Total Price: {result}</h2>
-        <button className="btn bg-warning">Pay</button>
+        <Link to = '/dashboard/payments'><button className="btn bg-warning">Pay</button></Link>
       </div>
       <div className="overflow-x-auto">
-        <table className="table">
+        <table className="table w-full">
           {/* head */}
           <thead>
             <tr>

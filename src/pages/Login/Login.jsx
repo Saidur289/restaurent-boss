@@ -4,6 +4,7 @@ import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, val
 import img from '../../assets/others/authentication1.png'
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
+import SocialLogin from '../../components/SocialLogin/SocialLogin';
 
 const Login = () => {
     const [disabled, setDisabled] = useState(true)
@@ -69,6 +70,7 @@ const Login = () => {
               </div>
             </form>
             <p className='p-5 text-sm text-center'>Do Not Have An Account? <Link to = '/signup' className="text-red-500">Sign Up</Link></p>
+            <SocialLogin></SocialLogin>
           </div>
         </div>
       </div>
