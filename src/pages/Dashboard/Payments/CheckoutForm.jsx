@@ -10,8 +10,10 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 const  CheckoutForm = () => {
   const [cart, refetch, isLoading] = useCart()
+  const axiosPublic = useAxiosPublic()
   if(isLoading) return <Loading></Loading>
     const stripe = useStripe();
     const {user} = useAuth()
@@ -98,8 +100,25 @@ const  CheckoutForm = () => {
       }
       
     };
+    const handlePaymentWithSSL = async() => {
+      const payment = {
+        email: user?.email,
+        price: totalPrice,
+        transactionId: '',
+        date: new Date(),
+        cartIds: cart.map(item=> item._id),
+        menuIds: cart.map(item => item.menuId),
+        status: 'pending'
+      }
+      const response = await axiosPublic.post(`/create-ssl-payment`, payment)
+      console.log(response.data);
+      if(response?.data?.gatewayUrl){
+        window.location.replace(response?.data?.gatewayUrl)
+      }
+    }
     return (
-        <div>
+       <>
+        <div className="mb-5">
               <form onSubmit={handleSubmit}>
       <CardElement
         options={{
@@ -126,6 +145,8 @@ const  CheckoutForm = () => {
       transactionId && <p className="text-green-500">{transactionId}</p>
     }
         </div>
+        <button onClick={handlePaymentWithSSL} className="btn btn-primary">Payment With Banking</button>
+       </>
     );
 };
 
