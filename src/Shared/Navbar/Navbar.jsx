@@ -2,9 +2,11 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { FaShoppingCart } from "react-icons/fa";
 import useCart from "../../hooks/useCart";
+import useAdmin from "../../hooks/useAdmin";
 
 const Navbar = () => {
   const { user, handleSignOut } = useAuth();
+  const {isAdmin} = useAdmin()
   const [cart] = useCart()
   const handleLogOut = () => {
     handleSignOut().then(() => {}, []);
@@ -21,6 +23,16 @@ const Navbar = () => {
       <li className="uppercase">
         <NavLink to="/order/salad">Our shop</NavLink>
       </li>
+      {
+        user && isAdmin && <li className="uppercase">
+        <NavLink to="/dashboard/adminHome">Dashboard</NavLink>
+      </li>
+      }
+      {
+        user && !isAdmin && <li className="uppercase">
+        <NavLink to="/dashboard/userHome">Dashboard</NavLink>
+      </li>
+      }
       <li className="uppercase">
         <NavLink to="/dashboard/cart">
           <button className="flex items-center gap-2">

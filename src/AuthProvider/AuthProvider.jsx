@@ -25,9 +25,11 @@ const AuthProvider = ({children}) => {
         return signOut(auth)
     }
     const updateUser = (updatedData) => {
+        setLoading(true)
         return updateProfile(auth.currentUser, updatedData)
     }
     const handleLoginGoogle = () => {
+        setLoading(true)
         return signInWithPopup(auth, provider)
     }
     useEffect(() => {
@@ -35,12 +37,14 @@ const unSubscribe = onAuthStateChanged(auth, async currentUser => {
             if(currentUser && currentUser?.email){
                 setUser(currentUser)
                 await   axiosPublic.post('/jwt', {email: currentUser?.email}, {withCredentials: true})
+                setLoading(false)
             }
             else{
                setUser(currentUser)
                await axiosPublic.get('/logout', {withCredentials: true} )
+               setLoading(false)
             }
-            setLoading(false)
+           
         })
         return () => {
             unSubscribe()
